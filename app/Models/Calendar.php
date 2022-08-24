@@ -15,4 +15,13 @@ class Calendar extends Model
         'holiday',
         'holiday_name',
     ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'date' => 'date',
+    ];
 }

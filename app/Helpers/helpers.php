@@ -15,7 +15,7 @@ if (! function_exists('get_start_date')) {
                 ->latest('id')
                 ->first();
 
-        return $calendar ? $calendar->date : now()->subDay()->toDateString();
+        return $calendar ? $calendar->date : now()->subDay();
     }
 }
 
@@ -28,5 +28,32 @@ if (! function_exists('today_is_working_day')) {
         $calendar = Calendar::where('date', $date)->first();
         
         return $calendar->weekend != true || $calendar->holiday != true;
+    }
+}
+
+/**
+ * CSV to array
+ */
+if (! function_exists('csv_to_array')) {
+
+    function csv_to_array($CSVFile)
+    {
+        if (! file_exists($CSVFile) || ! is_readable($CSVFile))
+            return false;
+
+        $header = null;
+        $data = [];
+
+        if (($handle = fopen($CSVFile,'r')) !== false) {
+            while (($row = fgetcsv($handle, 1000, ',')) !== false) {
+                if (! $header)
+                    $header = $row;
+                else
+                    $data[] = array_combine($header, $row);
+            }
+            fclose($handle);
+        }
+
+        return $data;
     }
 }

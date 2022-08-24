@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Policy;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    $file = public_path('files/sql-result.csv');
+    $data =  csv_to_array($file);
+
+    collect($data)->each(fn ($row) => Policy::create($row));
+
     return view('welcome');
 });

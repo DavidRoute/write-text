@@ -30,14 +30,32 @@ class GenerateReport extends Command
     {
         $policies = Policy::get();
 
+        $sequenceNo = '148';
+        $jobSubmissionNo = '168';
+        $startDate = get_start_date()->format('Ymd');
+        $endDate = now()->format('Ymd');
+        $firstLine = "C{$startDate}{$endDate}I880G{$jobSubmissionNo}";
+
+        $contents = $firstLine."\n";
+
         foreach ($policies as $policy) {
-            $spaces = str_repeat(' ', 10);
-            $contents .= $policy->col_1.$spaces.$policy->col_2.$spaces.$policy->col_3.$spaces.$policy->col_4.$spaces.$policy->col_5."\n";
+            $rowCount = str_pad($policy->RowCount, 7);
+            $vehiclePlateNumber = str_pad($policy->VehiclePlateNumber, 12);
+            $status = str_pad($policy->Status, 6);
+            $commencementDate = str_pad($policy->CommencementDate, 8);
+            $policyEndDate = str_pad($policy->PolicyEndDate, 8);
+            $policyHolderFullName = str_pad($policy->PolicyHolderFullName, 66);
+            $policyIssuedDate = str_pad($policy->PolicyIssuedDate, 8);
+            $policyNo = str_pad($policy->PolicyNo, 30);
+            $policyHolderNRIC = str_pad($policy->PolicyHolderNRIC, 21);
+            $vehicleChasisNumber = str_pad($policy->VehicleChasisNumber, 25);
+
+            $contents .= $rowCount.$vehiclePlateNumber.$status.$commencementDate.$policyEndDate.$policyHolderFullName.$policyIssuedDate.$policyNo.$policyHolderNRIC.$vehicleChasisNumber."\n";
         }
 
         // dd($contents);
 
-        $fileName = "CC_HLA.LTA.VRL_DB.148.txt";
+        $fileName = "CC_HLA.LTA.VRL_DB.{$sequenceNo}.txt";
         $path = "reports/{$fileName}";
 
         \Storage::put($path, $contents);

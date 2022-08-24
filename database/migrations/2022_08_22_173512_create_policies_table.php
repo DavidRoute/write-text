@@ -15,11 +15,16 @@ return new class extends Migration
     {
         Schema::create('policies', function (Blueprint $table) {
             $table->id();
-            $table->string('col_1');
-            $table->string('col_2');
-            $table->string('col_3');
-            $table->string('col_4');
-            $table->string('col_5');
+            $table->string('RowCount');
+            $table->string('VehiclePlateNumber');
+            $table->string('Status');
+            $table->string('CommencementDate');
+            $table->string('PolicyEndDate');
+            $table->string('PolicyHolderFullName');
+            $table->string('PolicyIssuedDate');
+            $table->string('PolicyNo');
+            $table->string('PolicyHolderNRIC');
+            $table->string('VehicleChasisNumber');
             $table->timestamps();
         });
     }
