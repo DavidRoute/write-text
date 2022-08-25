@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Policy;
+use Illuminate\Support\Str;
 
 class GenerateReport extends Command
 {
@@ -53,7 +54,15 @@ class GenerateReport extends Command
             $contents .= $rowCount.$vehiclePlateNumber.$status.$commencementDate.$policyEndDate.$policyHolderFullName.$policyIssuedDate.$policyNo.$policyHolderNRIC.$vehicleChasisNumber."\n";
         }
 
-        // dd($contents);
+        $nCount = $policies->filter(fn ($policy) => Str::startsWith($policy->Status, 'N'))->count();
+        $cCount = $policies->filter(fn ($policy) => Str::startsWith($policy->Status, 'C'))->count();
+        $eCount = $policies->filter(fn ($policy) => Str::startsWith($policy->Status, 'E'))->count();
+        $nCountPad = str_pad($nCount, 6, 0, STR_PAD_LEFT);
+        $cCountPad = str_pad($cCount, 6, 0, STR_PAD_LEFT);
+        $eCountPad = str_pad($eCount, 6, 0, STR_PAD_LEFT);
+
+        $lastLine = "T{$startDate}{$endDate}I880G{$jobSubmissionNo}{$nCountPad}{$cCountPad}{$eCountPad}";
+        $contents .= $lastLine;
 
         $fileName = "CC_HLA.LTA.VRL_DB.{$sequenceNo}.txt";
         $path = "reports/{$fileName}";
