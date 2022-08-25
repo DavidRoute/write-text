@@ -4,7 +4,9 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Policy;
+use App\Models\Report;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class GenerateReport extends Command
 {
@@ -30,9 +32,12 @@ class GenerateReport extends Command
     public function handle()
     {
         $policies = Policy::get();
+        $lastReport = Report::latest('id')->first();
 
-        $sequenceNo = '148';
-        $jobSubmissionNo = '168';
+        $defaultSequenceNo = 148;
+        $defaultJobSubmissionNo = 168;
+        $sequenceNo = $lastReport ? $lastReport->sequence_no+1 : $defaultSequenceNo;
+        $jobSubmissionNo = $lastReport ? $lastReport->job_submission_no+1 : $defaultJobSubmissionNo;
         $startDate = get_start_date()->format('Ymd');
         $endDate = now()->format('Ymd');
         $firstLine = "C{$startDate}{$endDate}I880G{$jobSubmissionNo}";
@@ -66,8 +71,15 @@ class GenerateReport extends Command
 
         $fileName = "CC_HLA.LTA.VRL_DB.{$sequenceNo}.txt";
         $path = "reports/{$fileName}";
-
         \Storage::put($path, $contents);
+
+        Report::create([
+            'sequence_no'       => $sequenceNo,
+            'job_submission_no' => $jobSubmissionNo,
+            'file_path'         => $path,
+            'start_date'        => Carbon::parse($startDate)->toDateString(),
+            'end_date'          => Carbon::parse($endDate)->toDateString()
+        ]);
 
         $this->info('Complete.');
     }
