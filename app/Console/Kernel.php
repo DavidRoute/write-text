@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\GenerateReport;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,7 +16,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command(GenerateReport::class)
+                ->dailyAt('18:00')
+                ->when(function () {
+                    return today_is_working_day();
+                })
+                ->onOneServer();
     }
 
     /**

@@ -21,13 +21,13 @@ if (! function_exists('get_start_date')) {
 
 if (! function_exists('today_is_working_day')) {
 
-    function today_is_non_working_day($date = null)
+    function today_is_working_day($date = null)
     {
         $date = $date ?? now()->toDateString();
         
         $calendar = Calendar::where('date', $date)->first();
         
-        return $calendar->weekend != true || $calendar->holiday != true;
+        return $calendar->weekend != true && $calendar->holiday != true;
     }
 }
 
