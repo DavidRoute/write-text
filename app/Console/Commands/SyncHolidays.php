@@ -33,10 +33,15 @@ class SyncHolidays extends Command
 
         Calendar::where('holiday', true)->update(['holiday' => false]);
 
-        $responseHolidays = Http::get("https://notes.rjchow.com/singapore_public_holidays/api/2022/data.json");
+        $client = new \GuzzleHttp\Client();
 
-        $responseHolidays
-                ->collect()
+        $res = $client->request('GET', "https://notes.rjchow.com/singapore_public_holidays/api/2022/data.json");
+        $response = json_decode($res->getBody(), true);
+
+        // $responseHolidays = Http::get("https://notes.rjchow.com/singapore_public_holidays/api/2022/data.json");
+        // $responseHolidays
+
+            collect($response)
                 ->each(function ($response) {
                     $date = $response['Date'];
                     $name = $response['Name'];
