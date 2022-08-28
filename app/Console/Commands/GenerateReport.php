@@ -59,9 +59,15 @@ class GenerateReport extends Command
             $contents .= $rowCount.$vehiclePlateNumber.$status.$commencementDate.$policyEndDate.$policyHolderFullName.$policyIssuedDate.$policyNo.$policyHolderNRIC.$vehicleChasisNumber."\n";
         }
 
-        $nCount = $policies->filter(fn ($policy) => Str::startsWith($policy->Status, 'N'))->count();
-        $cCount = $policies->filter(fn ($policy) => Str::startsWith($policy->Status, 'C'))->count();
-        $eCount = $policies->filter(fn ($policy) => Str::startsWith($policy->Status, 'E'))->count();
+        $nCount = $policies->filter(function ($policy) {
+            return Str::startsWith($policy->Status, 'N');
+        })->count();
+        $cCount = $policies->filter(function ($policy) {
+            return Str::startsWith($policy->Status, 'C');
+        })->count();
+        $eCount = $policies->filter(function ($policy) {
+            return Str::startsWith($policy->Status, 'E');
+        })->count();
         $nCountPad = str_pad($nCount, 6, 0, STR_PAD_LEFT);
         $cCountPad = str_pad($cCount, 6, 0, STR_PAD_LEFT);
         $eCountPad = str_pad($eCount, 6, 0, STR_PAD_LEFT);
